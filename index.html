@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f2a2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Chat Pribadi</title>
+<style>
+  :root {
+    --ink: #0f2a2e;
+    --ink-2: #17383d;
+    --paper: #e9e4d8;
+    --mine: #f2c14e;
+    --mine-text: #2b2105;
+    --theirs: #ffffff;
+    --theirs-text: #1b2a2c;
+    --muted: #6c7b7d;
+    --danger: #b3261e;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body { background: var(--ink); color: var(--theirs-text); overflow: hidden; }
+  [hidden] { display: none !important; }
+
+  /* Layar login */
+  #login-screen {
+    height: 100%; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 18px; padding: 24px; text-align: center; color: #f4efe2;
+  }
+  #login-screen img { width: 88px; height: 88px; border-radius: 22px; }
+  #login-screen h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: .01em; }
+  #login-screen p { max-width: 30ch; color: #b9c7c8; line-height: 1.5; }
+  .btn {
+    border: 0; border-radius: 999px; padding: 13px 24px; font: inherit; font-weight: 600;
+    background: var(--mine); color: var(--mine-text); cursor: pointer;
+  }
+  .btn:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  #login-error { color: #ffb4ab; min-height: 1.4em; font-size: .95rem; max-width: 34ch; }
+
+  /* Layar chat */
+  #app { height: 100%; display: flex; flex-direction: column; max-width: 720px; margin: 0 auto; background: var(--paper); }
+  header {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    background: var(--ink); color: #f4efe2;
+  }
+  header .avatar {
+    width: 38px; height: 38px; border-radius: 50%; background: var(--mine); color: var(--mine-text);
+    display: grid; place-items: center; font-weight: 700;
+  }
+  header .title { flex: 1; min-width: 0; }
+  header .title strong { display: block; font-size: 1.02rem; }
+  header .title span { font-size: .8rem; color: #b9c7c8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  header button { background: transparent; border: 1px solid #3c5a5e; color: #d9e3e3; border-radius: 999px; padding: 7px 14px; font: inherit; font-size: .85rem; cursor: pointer; }
+
+  #chat {
+    flex: 1; overflow-y: auto; padding: 14px 12px; display: flex; flex-direction: column; gap: 4px;
+    background-color: var(--paper);
+    background-image: radial-gradient(rgba(15,42,46,.07) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+  .day { align-self: center; margin: 10px 0 6px; font-size: .75rem; color: #44575a; background: rgba(255,255,255,.7); padding: 4px 12px; border-radius: 999px; }
+  .row { display: flex; }
+  .row.mine { justify-content: flex-end; }
+  .bubble {
+    max-width: 82%; padding: 7px 10px 6px; border-radius: 14px; line-height: 1.38;
+    box-shadow: 0 1px 1px rgba(0,0,0,.12); overflow-wrap: anywhere; white-space: pre-wrap;
+  }
+  .mine .bubble { background: var(--mine); color: var(--mine-text); border-bottom-right-radius: 4px; }
+  .theirs .bubble { background: var(--theirs); color: var(--theirs-text); border-bottom-left-radius: 4px; }
+  .who { display: block; font-size: .72rem; font-weight: 700; color: #1d6a6f; margin-bottom: 2px; }
+  .time { float: right; margin: 6px 0 0 12px; font-size: .68rem; color: var(--muted); }
+  .mine .time { color: #7a6420; }
+  .empty { margin: auto; text-align: center; color: #44575a; max-width: 28ch; line-height: 1.5; }
+
+  form {
+    display: flex; align-items: flex-end; gap: 8px; padding: 8px 10px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    background: #d9d3c4;
+  }
+  textarea {
+    flex: 1; resize: none; border: 0; border-radius: 20px; padding: 11px 15px; font: inherit;
+    max-height: 120px; background: #fff; color: var(--theirs-text);
+  }
+  #send {
+    width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; cursor: pointer;
+    background: var(--ink); color: var(--mine); display: grid; place-items: center;
+  }
+  #send:disabled { opacity: .45; cursor: default; }
+  #status { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); background: var(--danger); color: #fff; padding: 8px 14px; border-radius: 10px; font-size: .85rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .bubble { animation: pop .14s ease-out; }
+    @keyframes pop { from { transform: scale(.96); opacity: .6; } to { transform: none; opacity: 1; } }
+  }
+</style>
+</head>
+<body>
+
+<section id="login-screen">
+  <img src="icon.svg" alt="">
+  <h1>Chat Pribadi</h1>
+  <p>Masuk dengan akun Google yang sudah didaftarkan.</p>
+  <button class="btn" id="login">Masuk dengan Google</button>
+  <div id="login-error" role="alert"></div>
+</section>
+
+<section id="app" hidden>
+  <header>
+    <div class="avatar" id="my-initial">?</div>
+    <div class="title">
+      <strong>Chat Pribadi</strong>
+      <span id="my-email"></span>
+    </div>
+    <button id="logout">Keluar</button>
+  </header>
+  <main id="chat" aria-live="polite"></main>
+  <form id="form" autocomplete="off">
+    <textarea id="msg" rows="1" placeholder="Tulis pesan" maxlength="2000" aria-label="Tulis pesan"></textarea>
+    <button id="send" type="submit" aria-label="Kirim pesan">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>
+    </button>
+  </form>
+</section>
+<div id="status" hidden role="alert"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+/* 1) GANTI dengan firebaseConfig dari Firebase Console (Project settings > Your apps) */
+const firebaseConfig = {
+  apiKey: "AIzaSyBtPMTeugGfGTWKBwG1TLWxV_kf0aD6304",
+  authDomain: "pc-afk.firebaseapp.com",
+  projectId: "pc-afk",
+  appId: "1:503745421974:web:e743ae1217d9b1cce9d8b7"
+};
+
+/* 2) Hanya dua email ini yang boleh masuk. Pengaman utama tetap firestore.rules */
+const ALLOWED = ["jamesboni80@gmail.com", "lidyaaveronica@gmail.com"];
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = id => document.getElementById(id);
+let unsubscribe = null;
+
+$("login").onclick = async () => {
+  $("login-error").textContent = "";
+  try {
+    await signInWithPopup(auth, new GoogleAuthProvider());
+  } catch (err) {
+    if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") {
+      $("login-error").textContent = "Gagal masuk. Coba lagi. (" + (err.code || "error") + ")";
+    }
+  }
+};
+$("logout").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, async user => {
+  if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+
+  if (!user) {
+    $("app").hidden = true;
+    $("login-screen").hidden = false;
+    return;
+  }
+
+  const email = (user.email || "").toLowerCase();
+  if (!user.emailVerified || !ALLOWED.includes(email)) {
+    await signOut(auth);
+    $("login-error").textContent = "Akses ditolak. Email " + email + " tidak terdaftar.";
+    return;
+  }
+
+  $("login-screen").hidden = true;
+  $("app").hidden = false;
+  $("my-email").textContent = email;
+  $("my-initial").textContent = (user.displayName || email)[0].toUpperCase();
+  startChat(user);
+});
+
+function startChat(user) {
+  const box = $("chat");
+  const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(200));
+
+  unsubscribe = onSnapshot(q, snap => {
+    const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
+    const docs = snap.docs.map(d => d.data({ serverTimestamps: "estimate" })).reverse();
+    box.replaceChildren();
+
+    if (!docs.length) {
+      const e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "Belum ada pesan. Kirim pesan pertama.";
+      box.appendChild(e);
+      return;
+    }
+
+    let lastDay = "";
+    for (const m of docs) {
+      const date = m.createdAt ? m.createdAt.toDate() : new Date();
+      const day = date.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      if (day !== lastDay) {
+        const d = document.createElement("div");
+        d.className = "day";
+        d.textContent = day;
+        box.appendChild(d);
+        lastDay = day;
+      }
+
+      const mine = m.uid === user.uid;
+      const row = document.createElement("div");
+      row.className = "row " + (mine ? "mine" : "theirs");
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      if (!mine) {
+        const who = document.createElement("span");
+        who.className = "who";
+        who.textContent = m.name || "Teman";
+        bubble.appendChild(who);
+      }
+      bubble.appendChild(document.createTextNode(m.text));   // textContent-safe, bukan innerHTML
+      const t = document.createElement("span");
+      t.className = "time";
+      t.textContent = date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+      bubble.appendChild(t);
+
+      row.appendChild(bubble);
+      box.appendChild(row);
+    }
+    if (nearBottom || docs[docs.length - 1].uid === user.uid) box.scrollTop = box.scrollHeight;
+  }, err => showStatus("Tidak bisa memuat pesan. Pastikan Firestore Rules sudah dipublish."));
+
+  const input = $("msg");
+  const autosize = () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 120) + "px"; };
+  input.addEventListener("input", autosize);
+  input.addEventListener("keydown", e => {
+    // Enter = kirim (desktop), Shift+Enter = baris baru
+    if (e.key === "Enter" && !e.shiftKey && window.matchMedia("(hover: hover)").matches) {
+      e.preventDefault();
+      $("form").requestSubmit();
+    }
+  });
+
+  $("form").onsubmit = async e => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+    $("send").disabled = true;
+    try {
+      await addDoc(collection(db, "messages"), {
+        uid: user.uid,
+        name: user.displayName || user.email,
+        text,
+        createdAt: serverTimestamp()
+      });
+      input.value = "";
+      autosize();
+    } catch (err) {
+      showStatus("Pesan gagal terkirim. Coba lagi.");
+    } finally {
+      $("send").disabled = false;
+      input.focus();
+    }
+  };
+}
+
+function showStatus(msg) {
+  const s = $("status");
+  s.textContent = msg;
+  s.hidden = false;
+  setTimeout(() => (s.hidden = true), 4000);
+}
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>
