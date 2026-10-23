@@ -3,98 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f2a2e">
+<meta name="theme-color" content="#0e1418">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>jb80-afk</title>
 <style>
   :root {
-    --ink: #0f2a2e;
-    --ink-2: #17383d;
-    --paper: #e9e4d8;
-    --mine: #f2c14e;
-    --mine-text: #2b2105;
-    --theirs: #ffffff;
-    --theirs-text: #1b2a2c;
-    --muted: #6c7b7d;
-    --danger: #b3261e;
+    color-scheme: dark;
+    --bg: #0e1418;
+    --bar: #151e24;
+    --field: #1f2b32;
+    --mine: #2b4a50;
+    --mine-text: #e6f0ef;
+    --theirs: #232e37;
+    --theirs-text: #e2e8ec;
+    --muted: #8a9fa6;
+    --accent: #8fd0cc;
+    --gold: #d6b67a;
+    --danger: #e0877f;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; }
-  body { background: var(--ink); color: var(--theirs-text); overflow: hidden; }
+  body { background: var(--bg); color: var(--theirs-text); overflow: hidden; }
   [hidden] { display: none !important; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible, textarea:focus-visible, .bubble:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* Layar login */
   #login-screen {
     height: 100%; display: flex; flex-direction: column; align-items: center;
-    justify-content: center; gap: 18px; padding: 24px; text-align: center; color: #f4efe2;
+    justify-content: center; gap: 18px; padding: 24px; text-align: center; color: #e6eef0;
   }
   #login-screen img { width: 88px; height: 88px; border-radius: 22px; }
-  #login-screen h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: .01em; }
-  #login-screen p { max-width: 30ch; color: #b9c7c8; line-height: 1.5; }
-  .btn {
-    border: 0; border-radius: 999px; padding: 13px 24px; font: inherit; font-weight: 600;
-    background: var(--mine); color: var(--mine-text); cursor: pointer;
-  }
-  .btn:focus-visible, button:focus-visible, textarea:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-  #login-error { color: #ffb4ab; min-height: 1.4em; font-size: .95rem; max-width: 34ch; }
+  #login-screen h1 { font-size: 1.6rem; font-weight: 700; }
+  #login-screen p { max-width: 30ch; color: var(--muted); line-height: 1.5; }
+  .btn { border: 0; border-radius: 999px; padding: 13px 24px; font-weight: 600; background: var(--accent); color: #0e1418; cursor: pointer; }
+  #login-error { color: var(--danger); min-height: 1.4em; font-size: .95rem; max-width: 34ch; }
 
   /* Layar chat */
-  #app { height: 100%; display: flex; flex-direction: column; max-width: 720px; margin: 0 auto; background: var(--paper); }
+  #app { height: 100%; display: flex; flex-direction: column; max-width: 720px; margin: 0 auto; background: var(--bg); }
   header {
     display: flex; align-items: center; gap: 12px; padding: 12px 16px;
     padding-top: calc(12px + env(safe-area-inset-top, 0px));
-    background: var(--ink); color: #f4efe2;
+    background: var(--bar); border-bottom: 1px solid #1d2a31;
   }
-  header .avatar {
-    width: 38px; height: 38px; border-radius: 50%; background: var(--mine); color: var(--mine-text);
-    display: grid; place-items: center; font-weight: 700;
-  }
+  header .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--mine); color: var(--mine-text); display: grid; place-items: center; font-weight: 700; }
   header .title { flex: 1; min-width: 0; }
   header .title strong { display: block; font-size: 1.02rem; }
-  header .title span { font-size: .8rem; color: #b9c7c8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
-  header button { background: transparent; border: 1px solid #3c5a5e; color: #d9e3e3; border-radius: 999px; padding: 7px 14px; font: inherit; font-size: .85rem; cursor: pointer; }
+  header .title span { font-size: .8rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+  header button { background: transparent; border: 1px solid #2c3d45; color: #c5d3d6; border-radius: 999px; padding: 7px 14px; font-size: .85rem; cursor: pointer; }
 
   #chat {
     flex: 1; overflow-y: auto; padding: 14px 12px; display: flex; flex-direction: column; gap: 4px;
-    background-color: var(--paper);
-    background-image: radial-gradient(rgba(15,42,46,.07) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(255,255,255,.035) 1px, transparent 1px);
     background-size: 18px 18px;
   }
-  .day { align-self: center; margin: 10px 0 6px; font-size: .75rem; color: #44575a; background: rgba(255,255,255,.7); padding: 4px 12px; border-radius: 999px; }
-  .row { display: flex; }
+  .day { align-self: center; margin: 10px 0 6px; font-size: .75rem; color: var(--muted); background: #18232a; padding: 4px 12px; border-radius: 999px; }
+  .row { display: flex; border-radius: 14px; }
   .row.mine { justify-content: flex-end; }
   .bubble {
     max-width: 82%; padding: 7px 10px 6px; border-radius: 14px; line-height: 1.38;
-    box-shadow: 0 1px 1px rgba(0,0,0,.12); overflow-wrap: anywhere; white-space: pre-wrap;
+    overflow-wrap: anywhere; white-space: pre-wrap; cursor: pointer;
   }
   .mine .bubble { background: var(--mine); color: var(--mine-text); border-bottom-right-radius: 4px; }
   .theirs .bubble { background: var(--theirs); color: var(--theirs-text); border-bottom-left-radius: 4px; }
-  .who { display: block; font-size: .72rem; font-weight: 700; color: #1d6a6f; margin-bottom: 2px; }
+  .who { display: block; font-size: .72rem; font-weight: 700; color: var(--gold); margin-bottom: 2px; }
   .time { float: right; margin: 6px 0 0 12px; font-size: .68rem; color: var(--muted); }
-  .mine .time { color: #7a6420; }
-  .empty { margin: auto; text-align: center; color: #44575a; max-width: 28ch; line-height: 1.5; }
+  .mine .time { color: #9bbcbd; }
+  .deleted { font-style: italic; color: var(--muted); }
+  .bubble.is-deleted { cursor: default; background: transparent; border: 1px dashed #2c3d45; box-shadow: none; }
+
+  .quote {
+    display: block; margin: 0 0 5px; padding: 5px 8px; border-radius: 8px; font-size: .85rem;
+    background: rgba(0,0,0,.22); border-left: 3px solid var(--gold); cursor: pointer; white-space: normal;
+  }
+  .mine .quote { border-left-color: var(--accent); }
+  .quote b { display: block; font-size: .72rem; color: var(--gold); }
+  .mine .quote b { color: var(--accent); }
+  .quote span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #c3cfd3; }
+  .quote .gone { font-style: italic; color: var(--muted); }
+
+  .flash { animation: flash 1.2s ease-out; }
+  @keyframes flash { 0% { background: rgba(143,208,204,.28); } 100% { background: transparent; } }
+
+  .empty { margin: auto; text-align: center; color: var(--muted); max-width: 28ch; line-height: 1.5; }
+
+  /* Menu aksi pesan */
+  #menu {
+    position: fixed; z-index: 20; min-width: 150px; padding: 6px; border-radius: 14px;
+    background: #1c2830; border: 1px solid #2c3d45; box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  }
+  #menu button { display: block; width: 100%; text-align: left; background: transparent; border: 0; padding: 10px 12px; border-radius: 9px; cursor: pointer; }
+  #menu button:hover, #menu button:focus-visible { background: #26363f; }
+  #menu .danger { color: var(--danger); }
+
+  /* Bar balas / edit */
+  #modebar { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--bar); border-top: 1px solid #1d2a31; }
+  #modebar .mb-text { flex: 1; min-width: 0; border-left: 3px solid var(--accent); padding-left: 10px; }
+  #modebar strong { display: block; font-size: .8rem; color: var(--accent); }
+  #modebar span { display: block; font-size: .85rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #mb-close { background: transparent; border: 0; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: var(--muted); }
+  #mb-close:hover { background: #26363f; }
 
   form {
     display: flex; align-items: flex-end; gap: 8px; padding: 8px 10px;
     padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-    background: #d9d3c4;
+    background: var(--bar);
   }
   textarea {
     flex: 1; resize: none; border: 0; border-radius: 20px; padding: 11px 15px; font: inherit;
-    max-height: 120px; background: #fff; color: var(--theirs-text);
+    max-height: 120px; background: var(--field); color: #e7eef0;
   }
-  #send {
-    width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; cursor: pointer;
-    background: var(--ink); color: var(--mine); display: grid; place-items: center;
-  }
+  textarea::placeholder { color: #70868d; }
+  #send { width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; cursor: pointer; background: var(--accent); color: #0e1418; display: grid; place-items: center; }
   #send:disabled { opacity: .45; cursor: default; }
-  #status { position: fixed; left: 50%; bottom: 84px; transform: translateX(-50%); background: var(--danger); color: #fff; padding: 8px 14px; border-radius: 10px; font-size: .85rem; }
+
+  #status { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #5a2a26; color: #ffd9d4; padding: 8px 14px; border-radius: 10px; font-size: .85rem; z-index: 30; }
   @media (prefers-reduced-motion: no-preference) {
     .bubble { animation: pop .14s ease-out; }
     @keyframes pop { from { transform: scale(.96); opacity: .6; } to { transform: none; opacity: 1; } }
   }
+  @media (prefers-reduced-motion: reduce) { .flash { animation: none; background: rgba(143,208,204,.22); } }
 </style>
 </head>
 <body>
@@ -117,6 +147,12 @@
     <button id="logout">Keluar</button>
   </header>
   <main id="chat" aria-live="polite"></main>
+  <div id="modebar" hidden>
+    <div class="mb-text"><strong id="mb-title"></strong><span id="mb-sub"></span></div>
+    <button id="mb-close" type="button" aria-label="Batal">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+  </div>
   <form id="form" autocomplete="off">
     <textarea id="msg" rows="1" placeholder="Tulis pesan" maxlength="2000" aria-label="Tulis pesan"></textarea>
     <button id="send" type="submit" aria-label="Kirim pesan">
@@ -124,13 +160,15 @@
     </button>
   </form>
 </section>
+
+<div id="menu" role="menu" hidden></div>
 <div id="status" hidden role="alert"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp }
+import { getFirestore, collection, addDoc, updateDoc, doc, query, orderBy, limit, onSnapshot, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
 /* 1) GANTI dengan firebaseConfig dari Firebase Console (Project settings > Your apps) */
@@ -188,14 +226,161 @@ onAuthStateChanged(auth, async user => {
 
 function startChat(user) {
   const box = $("chat");
-  const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(200));
+  const input = $("msg");
+  const menu = $("menu");
+  let byId = new Map();
+  let lastId = null;
+  let replyTo = null;   // pesan yang sedang dibalas
+  let editing = null;   // pesan yang sedang diedit
 
+  /* ---------- Mode balas / edit ---------- */
+  function showBar(title, sub) {
+    $("mb-title").textContent = title;
+    $("mb-sub").textContent = sub;
+    $("modebar").hidden = false;
+  }
+  function clearMode() {
+    replyTo = null; editing = null;
+    $("modebar").hidden = true;
+  }
+  function startReply(m) {
+    clearMode();
+    replyTo = { id: m.id, name: m.name || "Teman", text: m.text.slice(0, 100) };
+    showBar("Membalas " + replyTo.name, replyTo.text);
+    input.focus();
+  }
+  function startEdit(m) {
+    clearMode();
+    editing = m;
+    showBar("Edit pesan", m.text);
+    input.value = m.text;
+    autosize();
+    input.focus();
+  }
+  $("mb-close").onclick = () => {
+    const wasEditing = !!editing;
+    clearMode();
+    if (wasEditing) { input.value = ""; autosize(); }
+  };
+
+  async function removeMessage(m) {
+    if (!confirm("Hapus pesan ini untuk semua orang?")) return;
+    try {
+      await updateDoc(doc(db, "messages", m.id), { text: "", deleted: true });
+      if (editing && editing.id === m.id) { clearMode(); input.value = ""; autosize(); }
+    } catch (err) {
+      showStatus("Pesan gagal dihapus. Coba lagi.");
+    }
+  }
+
+  /* ---------- Menu aksi ---------- */
+  function closeMenu() { menu.hidden = true; menu.replaceChildren(); }
+  function openMenu(bubble, m, mine) {
+    menu.replaceChildren();
+    const add = (label, fn, cls) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.setAttribute("role", "menuitem");
+      b.textContent = label;
+      if (cls) b.className = cls;
+      b.onclick = () => { closeMenu(); fn(); };
+      menu.appendChild(b);
+    };
+    add("Balas", () => startReply(m));
+    if (mine) {
+      add("Edit", () => startEdit(m));
+      add("Hapus", () => removeMessage(m), "danger");
+    }
+    menu.hidden = false;
+    const r = bubble.getBoundingClientRect();
+    const mw = menu.offsetWidth, mh = menu.offsetHeight;
+    let left = Math.min(Math.max(8, r.left), window.innerWidth - mw - 8);
+    let top = r.bottom + 6;
+    if (top + mh > window.innerHeight - 90) top = Math.max(8, r.top - mh - 6);
+    menu.style.left = left + "px";
+    menu.style.top = top + "px";
+    menu.firstChild.focus();
+  }
+  document.addEventListener("click", e => { if (!menu.contains(e.target)) closeMenu(); }, true);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
+  box.addEventListener("scroll", closeMenu);
+
+  function jumpTo(id) {
+    const el = document.getElementById("m-" + id);
+    if (!el) { showStatus("Pesan asli tidak ditemukan."); return; }
+    el.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    el.classList.remove("flash");
+    void el.offsetWidth;
+    el.classList.add("flash");
+  }
+
+  /* ---------- Tampilan pesan ---------- */
+  function renderMessage(m) {
+    const mine = m.uid === user.uid;
+    const date = m.createdAt ? m.createdAt.toDate() : new Date();
+
+    const row = document.createElement("div");
+    row.className = "row " + (mine ? "mine" : "theirs");
+    row.id = "m-" + m.id;
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+
+    if (!mine) {
+      const who = document.createElement("span");
+      who.className = "who";
+      who.textContent = m.name || "Teman";
+      bubble.appendChild(who);
+    }
+
+    if (m.replyTo && !m.deleted) {
+      const orig = byId.get(m.replyTo.id);
+      const q = document.createElement("span");
+      q.className = "quote";
+      const qn = document.createElement("b");
+      qn.textContent = m.replyTo.name;
+      const qt = document.createElement("span");
+      if (orig && orig.deleted) { qt.textContent = "Pesan telah dihapus"; qt.className = "gone"; }
+      else qt.textContent = m.replyTo.text;
+      q.append(qn, qt);
+      q.onclick = e => { e.stopPropagation(); jumpTo(m.replyTo.id); };
+      bubble.appendChild(q);
+    }
+
+    if (m.deleted) {
+      bubble.classList.add("is-deleted");
+      const s = document.createElement("span");
+      s.className = "deleted";
+      s.textContent = "Pesan ini telah dihapus";
+      bubble.appendChild(s);
+    } else {
+      bubble.appendChild(document.createTextNode(m.text));   // aman: bukan innerHTML
+      bubble.tabIndex = 0;
+      bubble.setAttribute("role", "button");
+      bubble.setAttribute("aria-label", "Pilihan pesan");
+      bubble.onclick = () => openMenu(bubble, m, mine);
+      bubble.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openMenu(bubble, m, mine); } };
+    }
+
+    const t = document.createElement("span");
+    t.className = "time";
+    const hhmm = date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+    t.textContent = (m.edited && !m.deleted ? "diedit " : "") + hhmm;
+    bubble.appendChild(t);
+
+    row.appendChild(bubble);
+    return row;
+  }
+
+  const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(200));
   unsubscribe = onSnapshot(q, snap => {
+    closeMenu();
+    const prevTop = box.scrollTop;
     const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
-    const docs = snap.docs.map(d => d.data({ serverTimestamps: "estimate" })).reverse();
+    const msgs = snap.docs.map(d => ({ id: d.id, ...d.data({ serverTimestamps: "estimate" }) })).reverse();
+    byId = new Map(msgs.map(m => [m.id, m]));
     box.replaceChildren();
 
-    if (!docs.length) {
+    if (!msgs.length) {
       const e = document.createElement("div");
       e.className = "empty";
       e.textContent = "Belum ada pesan. Kirim pesan pertama.";
@@ -204,7 +389,7 @@ function startChat(user) {
     }
 
     let lastDay = "";
-    for (const m of docs) {
+    for (const m of msgs) {
       const date = m.createdAt ? m.createdAt.toDate() : new Date();
       const day = date.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
       if (day !== lastDay) {
@@ -214,33 +399,24 @@ function startChat(user) {
         box.appendChild(d);
         lastDay = day;
       }
-
-      const mine = m.uid === user.uid;
-      const row = document.createElement("div");
-      row.className = "row " + (mine ? "mine" : "theirs");
-      const bubble = document.createElement("div");
-      bubble.className = "bubble";
-
-      if (!mine) {
-        const who = document.createElement("span");
-        who.className = "who";
-        who.textContent = m.name || "Teman";
-        bubble.appendChild(who);
-      }
-      bubble.appendChild(document.createTextNode(m.text));   // textContent-safe, bukan innerHTML
-      const t = document.createElement("span");
-      t.className = "time";
-      t.textContent = date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
-      bubble.appendChild(t);
-
-      row.appendChild(bubble);
-      box.appendChild(row);
+      box.appendChild(renderMessage(m));
     }
-    if (nearBottom || docs[docs.length - 1].uid === user.uid) box.scrollTop = box.scrollHeight;
-  }, err => showStatus("Tidak bisa memuat pesan. Pastikan Firestore Rules sudah dipublish."));
 
-  const input = $("msg");
-  const autosize = () => { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 120) + "px"; };
+    // Scroll ke bawah hanya saat ada pesan baru (atau pertama kali buka). Edit/hapus tidak menggeser layar.
+    const last = msgs[msgs.length - 1];
+    const first = lastId === null;
+    const isNew = last.id !== lastId;
+    lastId = last.id;
+    if (first || (isNew && (nearBottom || last.uid === user.uid))) box.scrollTop = box.scrollHeight;
+    else box.scrollTop = prevTop;
+
+    // Kalau pesan yang sedang diedit/dibalas sudah dihapus, batalkan modenya
+    if (editing && (!byId.get(editing.id) || byId.get(editing.id).deleted)) { clearMode(); input.value = ""; autosize(); }
+    if (replyTo && byId.get(replyTo.id) && byId.get(replyTo.id).deleted) clearMode();
+  }, () => showStatus("Tidak bisa memuat pesan. Pastikan Firestore Rules sudah dipublish."));
+
+  /* ---------- Kotak tulis ---------- */
+  function autosize() { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 120) + "px"; }
   input.addEventListener("input", autosize);
   input.addEventListener("keydown", e => {
     // Enter = kirim (desktop), Shift+Enter = baris baru
@@ -253,19 +429,28 @@ function startChat(user) {
   $("form").onsubmit = async e => {
     e.preventDefault();
     const text = input.value.trim();
-    if (!text) return;
+    if (!text) { if (editing) showStatus("Pesan tidak boleh kosong. Pakai Hapus kalau mau menghapus."); return; }
     $("send").disabled = true;
     try {
-      await addDoc(collection(db, "messages"), {
-        uid: user.uid,
-        name: user.displayName || user.email,
-        text,
-        createdAt: serverTimestamp()
-      });
+      if (editing) {
+        if (text !== editing.text) {
+          await updateDoc(doc(db, "messages", editing.id), { text, edited: true });
+        }
+      } else {
+        const data = {
+          uid: user.uid,
+          name: user.displayName || user.email,
+          text,
+          createdAt: serverTimestamp()
+        };
+        if (replyTo) data.replyTo = replyTo;
+        await addDoc(collection(db, "messages"), data);
+      }
+      clearMode();
       input.value = "";
       autosize();
     } catch (err) {
-      showStatus("Pesan gagal terkirim. Coba lagi.");
+      showStatus(editing ? "Pesan gagal diubah. Coba lagi." : "Pesan gagal terkirim. Coba lagi.");
     } finally {
       $("send").disabled = false;
       input.focus();

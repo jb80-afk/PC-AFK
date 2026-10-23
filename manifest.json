@@ -1,11 +1,11 @@
 {
-  "name": "jb80-afk",
+  "name": "Chat Pribadi",
   "short_name": "Chat",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0f2a2e",
-  "theme_color": "#0f2a2e",
+  "background_color": "#0e1418",
+  "theme_color": "#0e1418",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
