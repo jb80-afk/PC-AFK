@@ -119,6 +119,37 @@
   #send { width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; cursor: pointer; background: var(--accent); color: #0e1418; display: grid; place-items: center; }
   #send:disabled { opacity: .45; cursor: default; }
 
+  /* Video call */
+  header .icon-btn { width: 38px; height: 38px; padding: 0; display: grid; place-items: center; }
+  #call { position: fixed; inset: 0; z-index: 40; background: #05090b; display: flex; flex-direction: column; color: #e6eef0; }
+  #remote-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #05090b; }
+  @media (max-width: 720px) { #remote-video { object-fit: cover; } }
+  #local-video {
+    position: absolute; right: 14px; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 2;
+    width: 28vw; min-width: 96px; max-width: 150px; aspect-ratio: 3 / 4; object-fit: cover;
+    border-radius: 14px; background: #111b20; border: 1px solid #2c3d45; transform: scaleX(-1);
+  }
+  #local-video.back { transform: none; }
+  #call.is-ringing #remote-video, #call.is-ringing #local-video { display: none; }
+  #call-info { position: relative; z-index: 3; display: flex; flex-direction: column; gap: 2px; padding: calc(18px + env(safe-area-inset-top, 0px)) 120px 18px 18px; text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+  #call-info strong { font-size: 1.1rem; }
+  #call-info span { color: #c3cfd3; font-size: .9rem; }
+  #call.is-ringing #call-info { margin: auto; align-items: center; text-align: center; padding: 18px; }
+  #call.is-ringing #call-info strong { font-size: 1.5rem; }
+  #call-controls {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; justify-content: center; gap: 16px;
+    padding: 28px 18px calc(22px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(transparent, rgba(0,0,0,.6));
+  }
+  #call-incoming { position: relative; z-index: 3; display: flex; justify-content: center; gap: 56px; padding: 0 18px calc(60px + env(safe-area-inset-bottom, 0px)); }
+  .cwrap { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: .85rem; color: #c3cfd3; }
+  .cbtn { width: 58px; height: 58px; flex: none; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(36,50,58,.92); color: #e6eef0; cursor: pointer; }
+  .cbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .cbtn[aria-pressed="true"] { background: #e6eef0; color: #0e1418; }
+  .cbtn.hang, .cbtn.reject { background: #d9534f; color: #fff; }
+  .cbtn.accept { background: #3fa66b; color: #fff; }
+  .cbtn .slash { display: none; }
+  .cbtn[aria-pressed="true"] .slash { display: block; }
+
   /* Emoji */
   #emoji-btn { width: 40px; height: 44px; flex: none; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
   #emoji-btn:hover { background: #1f2b32; }
@@ -156,6 +187,9 @@
       <strong>jb80-afk</strong>
       <span id="my-email"></span>
     </div>
+    <button id="call-btn" class="icon-btn" type="button" aria-label="Mulai video call" title="Video call">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h8A2.5 2.5 0 0 1 16 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-8A2.5 2.5 0 0 1 3 16.5z"/><path d="M16 10.5l5-3v9l-5-3z"/></svg>
+    </button>
     <button id="logout">Keluar</button>
   </header>
   <main id="chat" aria-live="polite"></main>
@@ -179,6 +213,38 @@
     </button>
   </form>
 </section>
+
+<div id="call" hidden role="dialog" aria-label="Video call">
+  <video id="remote-video" autoplay playsinline></video>
+  <video id="local-video" autoplay playsinline muted></video>
+  <div id="call-info"><strong id="call-name"></strong><span id="call-status" aria-live="polite"></span></div>
+  <div id="call-incoming" hidden>
+    <div class="cwrap">
+      <button class="cbtn reject" id="btn-reject" type="button" aria-label="Tolak panggilan">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.5 15.5c5-5 12-5 17 0l-2.2 2.6a1.5 1.5 0 0 1-1.9.3l-2.6-1.4a1.5 1.5 0 0 1-.8-1.4v-1.6a11 11 0 0 0-3 0v1.6a1.5 1.5 0 0 1-.8 1.4l-2.6 1.4a1.5 1.5 0 0 1-1.9-.3z"/></svg>
+      </button><span>Tolak</span>
+    </div>
+    <div class="cwrap">
+      <button class="cbtn accept" id="btn-accept" type="button" aria-label="Terima panggilan">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h8A2.5 2.5 0 0 1 16 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-8A2.5 2.5 0 0 1 3 16.5z"/><path d="M16 10.5l5-3v9l-5-3z"/></svg>
+      </button><span>Terima</span>
+    </div>
+  </div>
+  <div id="call-controls" hidden>
+    <button class="cbtn" id="btn-mic" type="button" aria-pressed="false" aria-label="Matikan mikrofon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/><path class="slash" d="M4 4l16 16"/></svg>
+    </button>
+    <button class="cbtn" id="btn-cam" type="button" aria-pressed="false" aria-label="Matikan kamera">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h8A2.5 2.5 0 0 1 16 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-8A2.5 2.5 0 0 1 3 16.5z"/><path d="M16 10.5l5-3v9l-5-3z"/><path class="slash" d="M4 4l16 16"/></svg>
+    </button>
+    <button class="cbtn" id="btn-flip" type="button" aria-label="Ganti kamera depan atau belakang" hidden>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.5-5.8L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.5 5.8L4 15.5M4 20v-4.5h4.5"/></svg>
+    </button>
+    <button class="cbtn hang" id="btn-hang" type="button" aria-label="Akhiri panggilan">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.5 15.5c5-5 12-5 17 0l-2.2 2.6a1.5 1.5 0 0 1-1.9.3l-2.6-1.4a1.5 1.5 0 0 1-.8-1.4v-1.6a11 11 0 0 0-3 0v1.6a1.5 1.5 0 0 1-.8 1.4l-2.6 1.4a1.5 1.5 0 0 1-1.9-.3z"/></svg>
+    </button>
+  </div>
+</div>
 
 <div id="menu" role="menu" hidden></div>
 <div id="status" hidden role="alert"></div>
@@ -391,7 +457,7 @@ function startChat(user) {
   }
 
   const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(200));
-  unsubscribe = onSnapshot(q, snap => {
+  const unsubMsgs = onSnapshot(q, snap => {
     closeMenu();
     const prevTop = box.scrollTop;
     const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
@@ -433,6 +499,9 @@ function startChat(user) {
     if (editing && (!byId.get(editing.id) || byId.get(editing.id).deleted)) { clearMode(); input.value = ""; autosize(); }
     if (replyTo && byId.get(replyTo.id) && byId.get(replyTo.id).deleted) clearMode();
   }, () => showStatus("Tidak bisa memuat pesan. Pastikan Firestore Rules sudah dipublish."));
+
+  const stopCalls = setupCalls(user);
+  unsubscribe = () => { unsubMsgs(); stopCalls(); };
 
   /* ---------- Kotak tulis ---------- */
   function autosize() { input.style.height = "auto"; input.style.height = Math.min(input.scrollHeight, 120) + "px"; }
@@ -542,6 +611,252 @@ function startChat(user) {
       $("send").disabled = false;
       input.focus();
     }
+  };
+}
+
+/* ================= VIDEO CALL (WebRTC, sinyal lewat Firestore) ================= */
+const ICE_SERVERS = [
+  { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }
+  /* Kalau video call gagal tersambung di jaringan tertentu, tambahkan server TURN di sini, contoh:
+  , { urls: "turn:alamat-server-turn:443", username: "USERNAME", credential: "PASSWORD" } */
+];
+
+function setupCalls(user) {
+  const overlay = $("call"), remoteV = $("remote-video"), localV = $("local-video");
+  const origTitle = document.title;
+  const FINAL = ["rejected", "ended", "missed"];
+  const plain = o => JSON.parse(JSON.stringify(o));
+  const pad = n => String(n).padStart(2, "0");
+
+  let pc = null, localStream = null, callRef = null, role = null, callId = null;
+  let incoming = null, answerApplied = false, frontCam = true, connectedAt = 0;
+  let unsubs = [], pendingIn = [], pendingOut = [];
+  let ringTimer = null, clockTimer = null;
+  const handled = new Set();
+
+  const setStatus = t => { $("call-status").textContent = t; };
+  function showOverlay({ name, status, ringing }) {
+    $("call-name").textContent = name;
+    setStatus(status);
+    $("call-incoming").hidden = !ringing;
+    $("call-controls").hidden = !!ringing;
+    overlay.classList.toggle("is-ringing", !!ringing);
+    overlay.hidden = false;
+  }
+
+  async function getMedia() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("no-media");
+    return navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true },
+      video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+  }
+  function mediaError(err) {
+    const denied = err && (err.name === "NotAllowedError" || err.name === "SecurityError");
+    showStatus(denied ? "Izin kamera dan mikrofon ditolak. Izinkan lewat pengaturan browser." : "Kamera atau mikrofon tidak bisa dipakai.");
+  }
+
+  function sendCandidate(c) {
+    if (!callRef) { pendingOut.push(c); return; }
+    addDoc(collection(callRef, "candidates"), { uid: user.uid, candidate: c }).catch(() => {});
+  }
+  function flushOut() { const q = pendingOut; pendingOut = []; q.forEach(sendCandidate); }
+  function flushIn() { const q = pendingIn; pendingIn = []; q.forEach(c => pc && pc.addIceCandidate(c).catch(() => {})); }
+
+  function onConnected() {
+    clearTimeout(ringTimer);
+    connectedAt = Date.now();
+    setStatus("00:00");
+    clearInterval(clockTimer);
+    clockTimer = setInterval(() => {
+      const sec = Math.floor((Date.now() - connectedAt) / 1000);
+      setStatus(pad(Math.floor(sec / 60)) + ":" + pad(sec % 60));
+    }, 1000);
+  }
+
+  function makePc() {
+    const p = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+    localStream.getTracks().forEach(t => p.addTrack(t, localStream));
+    localV.srcObject = localStream;
+    p.ontrack = e => { remoteV.srcObject = e.streams[0]; remoteV.play().catch(() => {}); };
+    p.onicecandidate = e => { if (e.candidate) sendCandidate(plain(e.candidate.toJSON())); };
+    p.onconnectionstatechange = () => {
+      if (pc !== p) return;
+      if (p.connectionState === "connected") onConnected();
+      else if (p.connectionState === "disconnected") setStatus("Koneksi tidak stabil...");
+      else if (p.connectionState === "failed") hangUp("Koneksi gagal tersambung. Coba lagi, atau pindah jaringan.");
+    };
+    return p;
+  }
+
+  function prepareCamButtons() {
+    $("btn-flip").hidden = true;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+    navigator.mediaDevices.enumerateDevices()
+      .then(ds => { $("btn-flip").hidden = ds.filter(d => d.kind === "videoinput").length < 2; })
+      .catch(() => {});
+  }
+
+  function watchCall() {
+    unsubs.push(onSnapshot(callRef, async snap => {
+      const d = snap.data();
+      if (!d || !pc) return;
+      if (role === "caller" && d.answer && !answerApplied) {
+        answerApplied = true;
+        try { await pc.setRemoteDescription(d.answer); flushIn(); } catch (err) { hangUp("Gagal menyambung. Coba lagi."); }
+      }
+      if (FINAL.includes(d.status)) {
+        endLocal(d.status === "rejected" ? "Panggilan ditolak." : d.status === "missed" ? "Panggilan tidak dijawab." : "Panggilan selesai.");
+      }
+    }));
+    unsubs.push(onSnapshot(collection(callRef, "candidates"), snap => {
+      snap.docChanges().forEach(ch => {
+        if (ch.type !== "added") return;
+        const d = ch.doc.data();
+        if (d.uid === user.uid) return;
+        if (pc && pc.remoteDescription) pc.addIceCandidate(d.candidate).catch(() => {});
+        else pendingIn.push(d.candidate);
+      });
+    }));
+  }
+
+  function endLocal(msg) {
+    clearTimeout(ringTimer); clearInterval(clockTimer);
+    unsubs.forEach(u => u()); unsubs = [];
+    if (pc) { pc.onconnectionstatechange = null; pc.close(); }
+    if (localStream) localStream.getTracks().forEach(t => t.stop());
+    pc = null; localStream = null; callRef = null; callId = null; role = null;
+    answerApplied = false; frontCam = true; pendingIn = []; pendingOut = [];
+    remoteV.srcObject = null; localV.srcObject = null;
+    localV.classList.remove("back"); localV.style.visibility = "visible";
+    $("btn-mic").setAttribute("aria-pressed", "false");
+    $("btn-cam").setAttribute("aria-pressed", "false");
+    if (!incoming) overlay.hidden = true;
+    if (msg) showStatus(msg);
+  }
+  function hangUp(msg, status) {
+    if (callRef) updateDoc(callRef, { status: status || "ended" }).catch(() => {});
+    endLocal(msg);
+  }
+
+  /* ----- Memulai panggilan ----- */
+  async function startCall() {
+    if (pc || incoming) return;
+    try { localStream = await getMedia(); } catch (err) { mediaError(err); return; }
+    role = "caller";
+    showOverlay({ name: "Video call", status: "Memanggil..." });
+    pc = makePc();
+    prepareCamButtons();
+    let ref;
+    try {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      ref = await addDoc(collection(db, "calls"), {
+        from: user.uid,
+        fromName: user.displayName || user.email,
+        offer: { type: offer.type, sdp: offer.sdp },
+        status: "ringing",
+        createdAt: serverTimestamp()
+      });
+    } catch (err) { endLocal("Panggilan gagal dimulai. Coba lagi."); return; }
+    if (!pc) { updateDoc(ref, { status: "ended" }).catch(() => {}); return; }   // dibatalkan sebelum terkirim
+    callRef = ref; callId = ref.id; handled.add(callId);
+    flushOut();
+    watchCall();
+    ringTimer = setTimeout(() => { if (pc && role === "caller") hangUp("Tidak dijawab.", "missed"); }, 45000);
+  }
+
+  /* ----- Panggilan masuk ----- */
+  function showIncoming(id, data) {
+    incoming = { id, data };
+    showOverlay({ name: data.fromName || "Teman", status: "Panggilan video masuk", ringing: true });
+    document.title = "Panggilan masuk";
+    if (navigator.vibrate) navigator.vibrate([300, 200, 300, 200, 300]);
+  }
+  function hideIncoming() {
+    incoming = null;
+    document.title = origTitle;
+    if (!pc) overlay.hidden = true;
+  }
+  function rejectCall() {
+    if (!incoming) return;
+    const id = incoming.id;
+    handled.add(id);
+    updateDoc(doc(db, "calls", id), { status: "rejected" }).catch(() => {});
+    hideIncoming();
+  }
+  async function acceptCall() {
+    if (!incoming) return;
+    const { id, data } = incoming;
+    try { localStream = await getMedia(); } catch (err) { mediaError(err); rejectCall(); return; }
+    incoming = null;
+    document.title = origTitle;
+    handled.add(id); callId = id; callRef = doc(db, "calls", id); role = "callee";
+    showOverlay({ name: data.fromName || "Teman", status: "Menyambungkan..." });
+    pc = makePc();
+    prepareCamButtons();
+    try {
+      watchCall();
+      await pc.setRemoteDescription(data.offer);
+      flushIn();
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      await updateDoc(callRef, { answer: { type: answer.type, sdp: answer.sdp }, status: "active" });
+    } catch (err) { hangUp("Gagal menyambung. Coba lagi."); }
+  }
+
+  const stopIncoming = onSnapshot(
+    query(collection(db, "calls"), orderBy("createdAt", "desc"), limit(1)),
+    snap => {
+      const d = snap.docs[0];
+      if (!d) return;
+      const data = d.data({ serverTimestamps: "estimate" });
+      if (data.from === user.uid || d.id === callId) return;
+      if (incoming && incoming.id === d.id && data.status !== "ringing") { hideIncoming(); return; }
+      const age = data.createdAt ? Date.now() - data.createdAt.toMillis() : 0;
+      if (data.status === "ringing" && !pc && !incoming && !handled.has(d.id) && age < 90000) showIncoming(d.id, data);
+    },
+    () => {}
+  );
+
+  /* ----- Tombol kontrol ----- */
+  function toggleTrack(kind, btn) {
+    if (!localStream) return;
+    const tracks = kind === "audio" ? localStream.getAudioTracks() : localStream.getVideoTracks();
+    const on = !(tracks[0] && tracks[0].enabled);
+    tracks.forEach(t => (t.enabled = on));
+    btn.setAttribute("aria-pressed", String(!on));
+    if (kind === "video") localV.style.visibility = on ? "visible" : "hidden";
+  }
+  async function flipCam() {
+    if (!pc || !localStream) return;
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: frontCam ? "environment" : "user" } } });
+      const nt = s.getVideoTracks()[0];
+      const old = localStream.getVideoTracks()[0];
+      const sender = pc.getSenders().find(x => x.track && x.track.kind === "video");
+      if (sender) await sender.replaceTrack(nt);
+      if (old) { localStream.removeTrack(old); old.stop(); }
+      localStream.addTrack(nt);
+      frontCam = !frontCam;
+      localV.srcObject = localStream;
+      localV.classList.toggle("back", !frontCam);
+    } catch (err) { showStatus("Tidak bisa mengganti kamera."); }
+  }
+
+  $("call-btn").onclick = startCall;
+  $("btn-hang").onclick = () => hangUp();
+  $("btn-accept").onclick = acceptCall;
+  $("btn-reject").onclick = rejectCall;
+  $("btn-mic").onclick = e => toggleTrack("audio", e.currentTarget);
+  $("btn-cam").onclick = e => toggleTrack("video", e.currentTarget);
+  $("btn-flip").onclick = flipCam;
+
+  return () => {
+    stopIncoming();
+    if (callRef) updateDoc(callRef, { status: "ended" }).catch(() => {});
+    endLocal();
+    if (incoming) hideIncoming();
   };
 }
 
