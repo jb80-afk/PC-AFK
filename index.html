@@ -119,6 +119,57 @@
   #send { width: 44px; height: 44px; flex: none; border: 0; border-radius: 50%; cursor: pointer; background: var(--accent); color: #0e1418; display: grid; place-items: center; }
   #send:disabled { opacity: .45; cursor: default; }
 
+  /* Lampiran */
+  #attach-btn { width: 40px; height: 44px; flex: none; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
+  #attach-btn:hover { background: #1f2b32; }
+  #attach-btn[aria-expanded="true"] { color: var(--accent); }
+  #attach-menu { position: fixed; z-index: 25; min-width: 170px; padding: 6px; border-radius: 14px; background: #1c2830; border: 1px solid #2c3d45; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+  #attach-menu button { display: block; width: 100%; text-align: left; background: transparent; border: 0; padding: 11px 12px; border-radius: 9px; cursor: pointer; }
+  #attach-menu button:hover, #attach-menu button:focus-visible { background: #26363f; }
+  #tray { display: flex; gap: 8px; padding: 8px 12px; background: var(--bar); border-top: 1px solid #1d2a31; overflow-x: auto; }
+  .titem { position: relative; flex: none; width: 68px; height: 68px; border-radius: 12px; overflow: hidden; background: #1f2b32; }
+  .titem img, .titem video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tfile { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px; font-size: .68rem; color: var(--muted); text-align: center; }
+  .tfile b { font-size: .95rem; color: var(--accent); }
+  .tfile span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tx { position: absolute; top: 3px; right: 3px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: rgba(0,0,0,.65); color: #fff; cursor: pointer; display: grid; place-items: center; font-size: .8rem; line-height: 1; }
+  .tprog { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,.55); font-size: .8rem; font-weight: 700; }
+
+  .bubble.has-att { position: relative; }
+  .att { display: block; }
+  .att img, .att video { display: block; width: min(260px, 64vw); height: auto; max-height: 340px; border-radius: 10px; background: #111b20; }
+  .att img { object-fit: cover; cursor: zoom-in; }
+  .att video { object-fit: contain; background: #000; aspect-ratio: 16 / 9; }
+  .cap { display: block; margin-top: 5px; }
+  .more { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 50%; border: 0; background: rgba(0,0,0,.5); color: #fff; cursor: pointer; display: grid; place-items: center; line-height: 1; padding-bottom: 4px; }
+  .filecard { display: flex; align-items: center; gap: 10px; min-width: 190px; max-width: 280px; padding: 8px 10px; border-radius: 10px; background: rgba(0,0,0,.2); color: inherit; text-decoration: none; white-space: normal; }
+  .filecard .ficon { flex: none; width: 38px; height: 44px; border-radius: 8px; background: rgba(255,255,255,.1); display: grid; place-items: center; font-size: .7rem; font-weight: 700; }
+  .filecard .fname { display: block; font-size: .9rem; overflow-wrap: anywhere; }
+  .filecard .fsize { display: block; font-size: .72rem; color: var(--muted); }
+
+  #viewer { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.93); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px; }
+  #viewer img { max-width: 100%; max-height: 82vh; object-fit: contain; border-radius: 6px; }
+  #viewer a { color: var(--accent); font-size: .9rem; }
+  #viewer-close { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px; }
+
+  #cam { position: fixed; inset: 0; z-index: 45; background: #000; display: flex; flex-direction: column; }
+  #cam-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
+  #cam-preview.front { transform: scaleX(-1); }
+  #cam-close { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); left: 14px; z-index: 2; }
+  #cam-timer { position: absolute; top: calc(22px + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 2; padding: 4px 12px; border-radius: 999px; background: rgba(217,83,79,.9); color: #fff; font-size: .85rem; display: none; }
+  #cam.recording #cam-timer { display: block; }
+  #cam-bottom { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 28px 18px calc(24px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(transparent, rgba(0,0,0,.65)); }
+  #cam-modes { display: flex; gap: 6px; }
+  .cmode { border: 0; border-radius: 999px; padding: 7px 16px; background: transparent; color: #cfd9db; cursor: pointer; }
+  .cmode[aria-pressed="true"] { background: rgba(255,255,255,.18); color: #fff; font-weight: 600; }
+  #cam-row { width: 100%; max-width: 360px; display: flex; align-items: center; justify-content: space-between; }
+  #cam-row .spacer { width: 58px; }
+  #cam-shutter { width: 74px; height: 74px; border-radius: 50%; border: 4px solid #fff; background: transparent; cursor: pointer; display: grid; place-items: center; padding: 0; }
+  #cam-shutter::after { content: ""; width: 54px; height: 54px; border-radius: 50%; background: #fff; transition: all .15s; }
+  #cam.vmode #cam-shutter::after { background: #d9534f; }
+  #cam.recording #cam-shutter::after { width: 28px; height: 28px; border-radius: 6px; background: #d9534f; }
+  #cam.recording #cam-flip, #cam.recording #cam-modes { visibility: hidden; }
+
   /* Video call */
   header .icon-btn { width: 38px; height: 38px; padding: 0; display: grid; place-items: center; }
   #call { position: fixed; inset: 0; z-index: 40; background: #05090b; display: flex; flex-direction: column; color: #e6eef0; }
@@ -199,11 +250,15 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
     </button>
   </div>
+  <div id="tray" hidden aria-label="Lampiran yang akan dikirim"></div>
   <div id="emoji-panel" hidden>
     <div id="emoji-tabs" role="tablist" aria-label="Kategori emoji"></div>
     <div id="emoji-grid"></div>
   </div>
   <form id="form" autocomplete="off">
+    <button id="attach-btn" type="button" aria-label="Lampirkan foto, video, atau file" aria-expanded="false" aria-controls="attach-menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l9-9a3.7 3.7 0 0 1 5.2 5.2l-9 9a1.8 1.8 0 0 1-2.6-2.6l8.2-8.2"/></svg>
+    </button>
     <button id="emoji-btn" type="button" aria-label="Pilih emoji" aria-expanded="false" aria-controls="emoji-panel">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 14.2c1 1.6 2.4 2.3 4 2.3s3-.7 4-2.3"/><circle cx="9" cy="10" r=".6" fill="currentColor"/><circle cx="15" cy="10" r=".6" fill="currentColor"/></svg>
     </button>
@@ -213,6 +268,43 @@
     </button>
   </form>
 </section>
+
+<input id="pick-media" type="file" accept="image/*,video/*" multiple hidden>
+<input id="pick-file" type="file" multiple hidden>
+<div id="attach-menu" role="menu" hidden>
+  <button id="am-media" type="button" role="menuitem">Foto atau video</button>
+  <button id="am-camera" type="button" role="menuitem">Kamera</button>
+  <button id="am-file" type="button" role="menuitem">File</button>
+</div>
+
+<div id="cam" hidden role="dialog" aria-label="Kamera">
+  <video id="cam-preview" autoplay playsinline muted></video>
+  <button id="cam-close" class="cbtn" type="button" aria-label="Tutup kamera">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
+  <div id="cam-timer" aria-live="polite">00:00</div>
+  <div id="cam-bottom">
+    <div id="cam-modes">
+      <button id="cam-mode-photo" class="cmode" type="button" aria-pressed="true">Foto</button>
+      <button id="cam-mode-video" class="cmode" type="button" aria-pressed="false">Video</button>
+    </div>
+    <div id="cam-row">
+      <span class="spacer"></span>
+      <button id="cam-shutter" type="button" aria-label="Ambil foto"></button>
+      <button id="cam-flip" class="cbtn" type="button" aria-label="Ganti kamera depan atau belakang">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.5-5.8L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.5 5.8L4 15.5M4 20v-4.5h4.5"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="viewer" hidden role="dialog" aria-label="Lihat foto">
+  <button id="viewer-close" class="cbtn" type="button" aria-label="Tutup">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+  </button>
+  <img id="viewer-img" alt="">
+  <a id="viewer-open" href="#" target="_blank" rel="noopener">Buka ukuran asli</a>
+</div>
 
 <div id="call" hidden role="dialog" aria-label="Video call">
   <video id="remote-video" autoplay playsinline></video>
@@ -255,12 +347,15 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
   from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, updateDoc, doc, query, orderBy, limit, onSnapshot, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject }
+  from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
 
 /* 1) GANTI dengan firebaseConfig dari Firebase Console (Project settings > Your apps) */
 const firebaseConfig = {
   apiKey: "AIzaSyBtPMTeugGfGTWKBwG1TLWxV_kf0aD6304",
   authDomain: "pc-afk.firebaseapp.com",
   projectId: "pc-afk",
+  // storageBucket: "ISI_DI_SINI.firebasestorage.app",   // hanya perlu kalau fitur lampiran diaktifkan (butuh paket Blaze)
   appId: "1:503745421974:web:e743ae1217d9b1cce9d8b7"
 };
 
@@ -270,6 +365,9 @@ const ALLOWED = ["jamesboni80@gmail.com", "lidyaaveronica@gmail.com"];
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+/* Fitur kirim foto/video/file butuh Firebase Storage (paket Blaze). Ubah ke true hanya kalau sudah dipasang. */
+const ENABLE_ATTACHMENTS = false;
+const storage = ENABLE_ATTACHMENTS ? getStorage(app) : null;
 
 const $ = id => document.getElementById(id);
 let unsubscribe = null;
@@ -330,7 +428,7 @@ function startChat(user) {
   }
   function startReply(m) {
     clearMode();
-    replyTo = { id: m.id, name: m.name || "Teman", text: m.text.slice(0, 100) };
+    replyTo = { id: m.id, name: m.name || "Teman", text: (m.text || attachLabel(m.attachment || {})).slice(0, 100) };
     showBar("Membalas " + replyTo.name, replyTo.text);
     input.focus();
   }
@@ -352,6 +450,7 @@ function startChat(user) {
     if (!confirm("Hapus pesan ini untuk semua orang?")) return;
     try {
       await updateDoc(doc(db, "messages", m.id), { text: "", deleted: true });
+      if (m.attachment && m.attachment.path) deleteObject(ref(storage, m.attachment.path)).catch(() => {});
       if (editing && editing.id === m.id) { clearMode(); input.value = ""; autosize(); }
     } catch (err) {
       showStatus("Pesan gagal dihapus. Coba lagi.");
@@ -372,7 +471,7 @@ function startChat(user) {
     };
     add("Balas", () => startReply(m));
     if (mine) {
-      add("Edit", () => startEdit(m));
+      add(m.attachment ? "Edit keterangan" : "Edit", () => startEdit(m));
       add("Hapus", () => removeMessage(m), "danger");
     }
     menu.hidden = false;
@@ -388,6 +487,8 @@ function startChat(user) {
   document.addEventListener("click", e => { if (!menu.contains(e.target)) closeMenu(); }, true);
   document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
   box.addEventListener("scroll", closeMenu);
+  box.addEventListener("wheel", () => { box.dataset.stick = "0"; }, { passive: true });
+  box.addEventListener("touchmove", () => { box.dataset.stick = "0"; }, { passive: true });
 
   function jumpTo(id) {
     const el = document.getElementById("m-" + id);
@@ -438,7 +539,27 @@ function startChat(user) {
       s.textContent = "Pesan ini telah dihapus";
       bubble.appendChild(s);
     } else {
-      bubble.appendChild(document.createTextNode(m.text));   // aman: bukan innerHTML
+      if (m.attachment) {
+        bubble.classList.add("has-att");
+        bubble.appendChild(renderAttachment(m.attachment));
+        if (m.attachment.type !== "file") {
+          const more = document.createElement("button");
+          more.type = "button"; more.className = "more"; more.textContent = "\u22EF";
+          more.setAttribute("aria-label", "Pilihan pesan");
+          more.onclick = e => { e.stopPropagation(); openMenu(bubble, m, mine); };
+          bubble.appendChild(more);
+        }
+      }
+      if (m.text) {
+        if (m.attachment) {
+          const cap = document.createElement("span");
+          cap.className = "cap";
+          cap.appendChild(document.createTextNode(m.text));
+          bubble.appendChild(cap);
+        } else {
+          bubble.appendChild(document.createTextNode(m.text));   // aman: bukan innerHTML
+        }
+      }
       bubble.tabIndex = 0;
       bubble.setAttribute("role", "button");
       bubble.setAttribute("aria-label", "Pilihan pesan");
@@ -492,8 +613,11 @@ function startChat(user) {
     const first = lastId === null;
     const isNew = last.id !== lastId;
     lastId = last.id;
-    if (first || (isNew && (nearBottom || last.uid === user.uid))) box.scrollTop = box.scrollHeight;
+    const stick = first || (isNew && (nearBottom || last.uid === user.uid));
+    if (stick) box.scrollTop = box.scrollHeight;
     else box.scrollTop = prevTop;
+    box.dataset.stick = stick ? "1" : "0";
+    if (stick) setTimeout(() => { box.dataset.stick = "0"; }, 3000);
 
     // Kalau pesan yang sedang diedit/dibalas sudah dihapus, batalkan modenya
     if (editing && (!byId.get(editing.id) || byId.get(editing.id).deleted)) { clearMode(); input.value = ""; autosize(); }
@@ -582,36 +706,390 @@ function startChat(user) {
   panel.addEventListener("keydown", e => { if (e.key === "Escape") { toggleEmoji(false); input.focus(); } });
   input.addEventListener("keydown", e => { if (e.key === "Escape" && !panel.hidden) toggleEmoji(false); });
 
+  /* ---------- Lampiran (foto, video, file) ---------- */
+  let pending = [];      // { file, kind, w, h, url, progress, progEl }
+  let uploading = false;
+  const tray = $("tray");
+  const amenu = $("attach-menu");
+
+  function updateProgress() {
+    pending.forEach(p => {
+      if (!p.progEl) return;
+      p.progEl.hidden = p.progress < 0;
+      p.progEl.textContent = p.progress >= 0 ? p.progress + "%" : "";
+    });
+  }
+  function renderTray() {
+    tray.replaceChildren();
+    tray.hidden = pending.length === 0;
+    pending.forEach((p, idx) => {
+      const item = document.createElement("div");
+      item.className = "titem";
+      let th;
+      if (p.kind === "image") { th = document.createElement("img"); th.src = p.url; th.alt = ""; }
+      else if (p.kind === "video") {
+        th = document.createElement("video");
+        th.src = p.url + "#t=0.1"; th.muted = true; th.preload = "metadata"; th.playsInline = true;
+      } else {
+        th = document.createElement("div");
+        th.className = "tfile";
+        const ext = document.createElement("b");
+        ext.textContent = (p.file.name.includes(".") ? p.file.name.split(".").pop() : "FILE").slice(0, 4).toUpperCase();
+        const nm = document.createElement("span");
+        nm.textContent = p.file.name;
+        th.append(ext, nm);
+      }
+      item.appendChild(th);
+      const x = document.createElement("button");
+      x.type = "button"; x.className = "tx"; x.textContent = "\u00D7";
+      x.setAttribute("aria-label", "Hapus lampiran " + p.file.name);
+      x.onclick = () => {
+        if (uploading) return;
+        URL.revokeObjectURL(p.url);
+        pending.splice(idx, 1);
+        renderTray();
+      };
+      item.appendChild(x);
+      const pr = document.createElement("div");
+      pr.className = "tprog"; pr.hidden = true;
+      p.progEl = pr;
+      item.appendChild(pr);
+      tray.appendChild(item);
+    });
+    updateProgress();
+  }
+
+  async function addFiles(list) {
+    for (const f of Array.from(list)) {
+      if (f.size > MAX_BYTES) { showStatus(f.name + " terlalu besar (maksimal 50 MB)."); continue; }
+      if (pending.length >= 10) { showStatus("Maksimal 10 lampiran sekali kirim."); break; }
+      let kind = kindOf(f), file = f, w = 0, h = 0;
+      if (kind === "image") ({ file, w, h } = await prepareImage(f));
+      else if (kind === "video") { const m = await readVideoMeta(f); w = m.w; h = m.h; }
+      pending.push({ file, kind, w, h, url: URL.createObjectURL(file), progress: -1, progEl: null });
+      renderTray();
+    }
+  }
+
+  function closeAttach() { amenu.hidden = true; $("attach-btn").setAttribute("aria-expanded", "false"); }
+  $("attach-btn").hidden = !ENABLE_ATTACHMENTS;
+  $("attach-btn").onmousedown = keepFocus;
+  $("attach-btn").onclick = () => {
+    if (!amenu.hidden) { closeAttach(); return; }
+    const r = $("form").getBoundingClientRect();
+    amenu.style.left = Math.max(8, r.left + 10) + "px";
+    amenu.style.bottom = (window.innerHeight - r.top + 8) + "px";
+    amenu.hidden = false;
+    $("attach-btn").setAttribute("aria-expanded", "true");
+  };
+  document.addEventListener("click", e => {
+    if (!amenu.contains(e.target) && !e.target.closest("#attach-btn")) closeAttach();
+  }, true);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeAttach(); });
+
+  $("am-media").onclick = () => { closeAttach(); $("pick-media").click(); };
+  $("am-file").onclick = () => { closeAttach(); $("pick-file").click(); };
+  $("am-camera").onclick = () => { closeAttach(); openCamera(f => addFiles([f])); };
+  $("pick-media").onchange = e => { const fl = Array.from(e.target.files); e.target.value = ""; addFiles(fl); };
+  $("pick-file").onchange = e => { const fl = Array.from(e.target.files); e.target.value = ""; addFiles(fl); };
+
+  function uploadFile(p) {
+    return new Promise((resolve, reject) => {
+      const safe = p.file.name.replace(/[^\w.\- ]+/g, "_").slice(-80);
+      const path = "chat/" + user.uid + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "-" + safe;
+      const task = uploadBytesResumable(ref(storage, path), p.file, { contentType: p.file.type || "application/octet-stream" });
+      p.progress = 0; updateProgress();
+      task.on("state_changed",
+        s => { p.progress = Math.round(100 * s.bytesTransferred / s.totalBytes); updateProgress(); },
+        err => { p.progress = -1; updateProgress(); reject(err); },
+        async () => {
+          try {
+            const url = await getDownloadURL(task.snapshot.ref);
+            const att = { type: p.kind, url, path, name: p.file.name.slice(0, 200), size: p.file.size, mime: p.file.type || "" };
+            if (p.w && p.h) { att.w = p.w; att.h = p.h; }
+            resolve(att);
+          } catch (err) { reject(err); }
+        });
+    });
+  }
+
+  /* ---------- Kirim / simpan edit ---------- */
   $("form").onsubmit = async e => {
     e.preventDefault();
+    if (uploading) return;
     const text = input.value.trim();
-    if (!text) { if (editing) showStatus("Pesan tidak boleh kosong. Pakai Hapus kalau mau menghapus."); return; }
+
+    if (editing) {
+      if (!text && !editing.attachment) { showStatus("Pesan tidak boleh kosong. Pakai Hapus kalau mau menghapus."); return; }
+      $("send").disabled = true;
+      try {
+        if (text !== editing.text) await updateDoc(doc(db, "messages", editing.id), { text, edited: true });
+        clearMode(); input.value = ""; autosize();
+      } catch (err) {
+        showStatus("Pesan gagal diubah. Coba lagi.");
+      } finally {
+        $("send").disabled = false; input.focus();
+      }
+      return;
+    }
+
+    if (!text && !pending.length) return;
     $("send").disabled = true;
+    uploading = true;
     try {
-      if (editing) {
-        if (text !== editing.text) {
-          await updateDoc(doc(db, "messages", editing.id), { text, edited: true });
-        }
-      } else {
-        const data = {
-          uid: user.uid,
-          name: user.displayName || user.email,
-          text,
-          createdAt: serverTimestamp()
-        };
+      if (!pending.length) {
+        const data = { uid: user.uid, name: user.displayName || user.email, text, createdAt: serverTimestamp() };
         if (replyTo) data.replyTo = replyTo;
         await addDoc(collection(db, "messages"), data);
+        notifyByEmail(user, text, null, 0);
+        clearMode(); input.value = ""; autosize();
+      } else {
+        let first = true;
+        const total = pending.length;
+        while (pending.length) {
+          const p = pending[0];
+          const att = await uploadFile(p);
+          const data = { uid: user.uid, name: user.displayName || user.email, text: first ? text : "", createdAt: serverTimestamp(), attachment: att };
+          if (first && replyTo) data.replyTo = replyTo;
+          await addDoc(collection(db, "messages"), data);
+          URL.revokeObjectURL(p.url);
+          pending.shift();
+          renderTray();
+          if (first) { notifyByEmail(user, text, att, total); clearMode(); input.value = ""; autosize(); first = false; }
+        }
       }
-      clearMode();
-      input.value = "";
-      autosize();
     } catch (err) {
-      showStatus(editing ? "Pesan gagal diubah. Coba lagi." : "Pesan gagal terkirim. Coba lagi.");
+      showStatus("Gagal mengirim. Pastikan Storage sudah aktif dan Rules sudah dipublish.");
+      renderTray();
     } finally {
+      uploading = false;
       $("send").disabled = false;
       input.focus();
     }
   };
+}
+
+/* ================= NOTIFIKASI EMAIL (lewat Google Apps Script) ================= */
+const APP_NAME = "jb80-afk";
+const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbzbmdL8p7Hx2yhzeUemdfv1gvMWTHGwtZlJggGYriiy70-hpHgB9ZLJ1ZpnXEJN538-3w/exec";        // alamat Web App dari Apps Script (lihat panduan)
+const NOTIFY_SENDER = "jamesboni80@gmail.com";   // hanya pesan dari akun ini yang memicu email
+const EMAIL_SHOW_TEXT = true;                    // false = email hanya bilang "ada pesan baru", isi pesan tidak ikut
+const EMAIL_COOLDOWN_MINUTES = 0;                // 0 = email untuk setiap pesan. Isi mis. 5 = maksimal 1 email per 5 menit
+
+async function notifyByEmail(user, text, att, count) {
+  try {
+    if (!NOTIFY_URL || NOTIFY_URL.startsWith("ISI_")) return;
+    if ((user.email || "").toLowerCase() !== NOTIFY_SENDER) return;
+    if (EMAIL_COOLDOWN_MINUTES > 0) {
+      const last = Number(localStorage.getItem("notify-last") || 0);
+      if (Date.now() - last < EMAIL_COOLDOWN_MINUTES * 60000) return;
+    }
+    const who = (user.displayName || "James").slice(0, 40);
+    const lines = [];
+    if (EMAIL_SHOW_TEXT && text) lines.push(text.slice(0, 1500));
+    if (att) {
+      const word = att.type === "image" ? "foto" : att.type === "video" ? "video" : "file";
+      lines.push(count > 1 ? "[" + who + " mengirim " + count + " lampiran]" : "[" + who + " mengirim " + word + "]");
+    }
+    if (!lines.length) lines.push("Ada pesan baru.");
+    lines.push("", "Balas lewat chat: " + location.origin + location.pathname);
+    const idToken = await user.getIdToken();   // bukti bahwa yang mengirim memang James
+    await fetch(NOTIFY_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ idToken, subject: "Pesan baru dari " + who + " di " + APP_NAME, text: lines.join("\n") })
+    });
+    try { localStorage.setItem("notify-last", String(Date.now())); } catch (e) {}
+  } catch (err) { /* email gagal tidak boleh mengganggu chat */ }
+}
+
+/* ================= LAMPIRAN: fungsi bantu ================= */
+const MAX_BYTES = 50 * 1024 * 1024;
+const fmtSize = n => n < 1024 ? n + " B" : n < 1048576 ? Math.round(n / 1024) + " KB" : (n / 1048576).toFixed(1) + " MB";
+const kindOf = f => /^image\/(jpeg|png|webp|gif|avif|bmp)$/.test(f.type) ? "image" : (f.type || "").startsWith("video/") ? "video" : "file";
+const attachLabel = a => a.type === "image" ? "Foto" : a.type === "video" ? "Video" : (a.name || "File");
+const stamp = () => new Date().toISOString().replace(/[-:T]/g, "").slice(0, 14);
+
+// Perkecil foto (maks 1600 px) supaya hemat kuota dan cepat terkirim
+async function prepareImage(file) {
+  try {
+    const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const w = bmp.width, h = bmp.height;
+    const canShrink = /^image\/(jpeg|png|webp)$/.test(file.type);
+    const scale = Math.min(1, 1600 / Math.max(w, h));
+    if (!canShrink || (scale === 1 && (file.type === "image/png" || file.size < 600 * 1024))) { bmp.close(); return { file, w, h }; }
+    const cw = Math.round(w * scale), ch = Math.round(h * scale);
+    const c = document.createElement("canvas");
+    c.width = cw; c.height = ch;
+    c.getContext("2d").drawImage(bmp, 0, 0, cw, ch);
+    bmp.close();
+    const type = file.type === "image/png" ? "image/png" : "image/jpeg";
+    const blob = await new Promise(r => c.toBlob(r, type, 0.82));
+    if (!blob || (scale === 1 && blob.size >= file.size)) return { file, w, h };
+    const name = file.name.replace(/\.[^.]+$/, "") + (type === "image/png" ? ".png" : ".jpg");
+    return { file: new File([blob], name, { type }), w: cw, h: ch };
+  } catch (err) {
+    return { file, w: 0, h: 0 };
+  }
+}
+
+function readVideoMeta(file) {
+  return new Promise(res => {
+    const v = document.createElement("video");
+    const u = URL.createObjectURL(file);
+    let done = false;
+    const finish = r => { if (done) return; done = true; URL.revokeObjectURL(u); res(r); };
+    v.preload = "metadata"; v.muted = true;
+    v.onloadedmetadata = () => finish({ w: v.videoWidth || 0, h: v.videoHeight || 0 });
+    v.onerror = () => finish({ w: 0, h: 0 });
+    setTimeout(() => finish({ w: 0, h: 0 }), 4000);
+    v.src = u;
+  });
+}
+
+function renderAttachment(a) {
+  const wrap = document.createElement("div");
+  wrap.className = "att";
+  if (a.type === "image") {
+    const img = document.createElement("img");
+    img.src = a.url; img.alt = a.name || "Foto"; img.loading = "lazy"; img.decoding = "async";
+    if (a.w && a.h) { img.width = a.w; img.height = a.h; }
+    img.onload = () => { const b = $("chat"); if (b.dataset.stick === "1") b.scrollTop = b.scrollHeight; };
+    img.onclick = e => { e.stopPropagation(); openViewer(a); };
+    wrap.appendChild(img);
+  } else if (a.type === "video") {
+    const v = document.createElement("video");
+    v.src = a.url; v.controls = true; v.preload = "metadata"; v.playsInline = true;
+    if (a.w && a.h) v.style.aspectRatio = a.w + " / " + a.h;
+    v.onclick = e => e.stopPropagation();
+    wrap.appendChild(v);
+  } else {
+    const link = document.createElement("a");
+    link.className = "filecard"; link.href = a.url; link.target = "_blank"; link.rel = "noopener"; link.download = a.name || "";
+    link.onclick = e => e.stopPropagation();
+    const ic = document.createElement("span");
+    ic.className = "ficon";
+    ic.textContent = ((a.name || "").includes(".") ? a.name.split(".").pop() : "FILE").slice(0, 4).toUpperCase();
+    const info = document.createElement("span");
+    const nm = document.createElement("span"); nm.className = "fname"; nm.textContent = a.name || "File";
+    const sz = document.createElement("span"); sz.className = "fsize"; sz.textContent = fmtSize(a.size || 0) + " - ketuk untuk membuka";
+    info.append(nm, sz);
+    link.append(ic, info);
+    wrap.appendChild(link);
+  }
+  return wrap;
+}
+
+function openViewer(a) {
+  $("viewer-img").src = a.url;
+  $("viewer-img").alt = a.name || "";
+  $("viewer-open").href = a.url;
+  $("viewer").hidden = false;
+  $("viewer-close").focus();
+}
+function closeViewer() { $("viewer").hidden = true; $("viewer-img").removeAttribute("src"); }
+$("viewer-close").onclick = closeViewer;
+$("viewer").onclick = e => { if (e.target.id === "viewer") closeViewer(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("viewer").hidden) closeViewer(); });
+
+// Kamera langsung (foto dan rekam video) di dalam aplikasi
+function openCamera(onFile) {
+  if (!$("call").hidden) { showStatus("Tutup video call dulu untuk memakai kamera."); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showStatus("Kamera tidak tersedia di browser ini."); return; }
+  const cam = $("cam"), vid = $("cam-preview");
+  let stream = null, front = true, mode = "photo", rec = null, chunks = [], t0 = 0, tick = null;
+
+  async function startStream() {
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: front ? "user" : "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false
+    });
+    vid.srcObject = stream;
+    vid.classList.toggle("front", front);
+  }
+  function close() {
+    clearInterval(tick);
+    if (rec && rec.state !== "inactive") { rec.onstop = null; rec.stop(); }
+    rec = null;
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    stream = null;
+    vid.srcObject = null;
+    cam.classList.remove("recording", "vmode");
+    cam.hidden = true;
+  }
+  function setMode(m) {
+    if (rec) return;
+    mode = m;
+    $("cam-mode-photo").setAttribute("aria-pressed", String(m === "photo"));
+    $("cam-mode-video").setAttribute("aria-pressed", String(m === "video"));
+    cam.classList.toggle("vmode", m === "video");
+    $("cam-shutter").setAttribute("aria-label", m === "photo" ? "Ambil foto" : "Mulai rekam");
+  }
+  async function startRec() {
+    if (typeof MediaRecorder === "undefined") { showStatus("Perekaman video tidak didukung browser ini."); return; }
+    try {
+      if (!stream.getAudioTracks().length) {
+        const a = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.addTrack(a.getAudioTracks()[0]);
+      }
+    } catch (err) { showStatus("Mikrofon tidak bisa dipakai, video direkam tanpa suara."); }
+    const mime = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"].find(m => MediaRecorder.isTypeSupported(m)) || "";
+    chunks = [];
+    const r = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 2500000 } : undefined);
+    rec = r;
+    r.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    r.onstop = () => {
+      const type = (r.mimeType || mime || "video/webm").split(";")[0];
+      const file = new File([new Blob(chunks, { type })], "video-" + stamp() + "." + (type.includes("mp4") ? "mp4" : "webm"), { type });
+      close();
+      onFile(file);
+    };
+    r.start(1000);
+    t0 = Date.now();
+    $("cam-timer").textContent = "00:00";
+    cam.classList.add("recording");
+    $("cam-shutter").setAttribute("aria-label", "Berhenti rekam");
+    tick = setInterval(() => {
+      const sec = Math.floor((Date.now() - t0) / 1000);
+      $("cam-timer").textContent = String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0");
+      if (sec >= 120) r.stop();   // batas 2 menit
+    }, 500);
+  }
+
+  $("cam-close").onclick = close;
+  $("cam-mode-photo").onclick = () => setMode("photo");
+  $("cam-mode-video").onclick = () => setMode("video");
+  $("cam-flip").onclick = async () => {
+    if (rec) return;
+    front = !front;
+    try { await startStream(); } catch (err) { front = !front; showStatus("Tidak bisa mengganti kamera."); }
+  };
+  $("cam-shutter").onclick = () => {
+    if (!stream) return;
+    if (mode === "photo") {
+      const w = vid.videoWidth, h = vid.videoHeight;
+      if (!w || !h) return;
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      c.getContext("2d").drawImage(vid, 0, 0, w, h);
+      c.toBlob(b => {
+        if (!b) return;
+        const file = new File([b], "foto-" + stamp() + ".jpg", { type: "image/jpeg" });
+        close();
+        onFile(file);
+      }, "image/jpeg", 0.9);
+    } else if (!rec) startRec();
+    else rec.stop();
+  };
+
+  setMode("photo");
+  cam.hidden = false;
+  startStream().catch(err => {
+    close();
+    showStatus(err && err.name === "NotAllowedError" ? "Izin kamera ditolak. Izinkan lewat pengaturan browser." : "Kamera tidak bisa dipakai.");
+  });
 }
 
 /* ================= VIDEO CALL (WebRTC, sinyal lewat Firestore) ================= */
